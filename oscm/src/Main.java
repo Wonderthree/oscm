@@ -5,7 +5,8 @@ public class Main {
 		System.out.println("Hello world!");
 		
 		Demand demand = new ConstantDemand(10);
-		Policy policy = new ConstantPolicy(5);
+		//Policy policy = new ConstantPolicy(5);
+		Policy policy = new ReorderPointPolicy(20, 50);
 		int initialInventory = 20;
 		Simulator simulator = new Simulator(initialInventory,
 				demand, policy, 10);
