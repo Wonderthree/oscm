@@ -11,7 +11,7 @@ public class ReorderPointPolicy extends Policy {
 	
 	@Override
 	public int order(int inventory) {
-		if (inventory <= reorderPoint) {
+		if (inventory < reorderPoint) {
 			return value;
 		} else {
 			return 0;
