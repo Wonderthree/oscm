@@ -14,11 +14,11 @@ public class Main {
 				new UniformDemand(30, seed)				
 		};
 		
-		//Policy policy = new ConstantPolicy(50);
-		Policy policy = new ReorderPointPolicy(42, 50);
+		Policy policy = new ConstantPolicy(50);
+//		Policy policy = new ReorderPointPolicy(42, 50);
 		
 		Simulator simulator = new Simulator(initialInventory,
-				demand[0], policy, 20);  //demand[i]************************
+				demand, policy, 20);  //demand[i]************************
 		
 	}
 	
