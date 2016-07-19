@@ -3,7 +3,6 @@ import java.util.Random;
 /**
  * Random number in {1, 2, ..., max}.
  * 
- * @author GuoHao
  *
  */
 public class UniformDemand extends Demand {

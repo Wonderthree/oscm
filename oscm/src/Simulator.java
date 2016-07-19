@@ -8,36 +8,37 @@ public class Simulator {
 	private int totalShipments=0;
 	private int unmetDemands=0;
 
-	public Simulator(int initialInventory, Demand demand, Policy policy, int periods)
+	public Simulator(int[] initialInventory, Demand demand, Policy policy, int periods)
 	{
+		int K =initialInventory;
 		// d : demand
 		// t : time period
-		// q[t] : order quantity in period t
-		// x[t] : quantity to arrive in period t
-		// x[t + leadTime] = q[t]
-		int[] q = new int[periods];
-		int[] x = new int[periods + leadTime];
+		// q[t][k] : order quantity in period t for product k
+		// x[t][k] : quantity to arrive in period t for product k
+		// x[t + leadTime][k] = q[t][k]
+		int[][]q = new int[periods][];
+		int[][]x = new int[periods + leadTime][];
 
-		int[] pipeline = new int[leadTime + 1];
+		//int[] pipeline = new int[leadTime + 1];  ******************************
 		// pipeline[k] = shipment to arrive in period t + k
 
 		// TODO add box size, max inventory level
 		// TODO lead times for shipments
 		// TODO much much later: demand and policy for multiple drugs
-		int inv = initialInventory; // i: beginning-of-period inventory
+		int inv =initialInventory; // i: beginning-of-period inventory
 		for (int t = 0; t < periods; ++t)
-		{ 
+		{                                      //another loop here for the drug type?*****
 			if (t % cycle == 0)
 			{                          
 				// Step 1: order new inventory every cycle period
-				q[t] = policy.order(inv);
+				q[t][1] = policy.order(inv);   //q[t][n]?
 				x[t + leadTime] = q[t];
-				totalShipments+= q[t];
+				totalShipments+= q[t][1];
 			}
 
 			// Step 2: inventory arrives (after lead time)
 
-			inv += x[t];
+			inv += x[t][1];
 			System.out.printf("i[%2d] = %2d, ", t, inv);
 
 			System.out.printf("q[%2d] = %2d, ", t, q[t]);
@@ -65,18 +66,20 @@ public class Simulator {
 			for (int l = 1; l <= leadTime; ++l) {
 				System.out.printf("%d (%d)", x[t + l], l);
 			}
-			if ((t-0) % (cycle) == 0)                       //TODO update the pipeline
-			{
-				System.out.printf("p[%2d] = %2d(1)\n", t, pipeline[leadTime]);
-			}
-			else if((t-1) % (cycle) == 0){
-				System.out.printf("p[%2d] = %2d(2)\n", t, pipeline[leadTime]);
-			}
-			else
-			{
-				System.out.printf("p[%2d] = %2d\n", t, pipeline[leadTime-1]);
-			}						
-
+			
+			
+			
+			//if ((t-0) % (cycle) == 0)                       //TODO update the pipeline
+			//{
+				//System.out.printf("p[%2d] = %2d(1)\n", t, pipeline[leadTime]);
+			//}
+			//else if((t-1) % (cycle) == 0){
+				//System.out.printf("p[%2d] = %2d(2)\n", t, pipeline[leadTime]);
+			//}
+			//else
+			//{
+				//System.out.printf("p[%2d] = %2d\n", t, pipeline[leadTime-1]);
+			//}						
 		}                             
 
 		// TODO print metrics such as:

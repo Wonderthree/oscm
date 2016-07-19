@@ -1,6 +1,6 @@
 
 public abstract class Policy {
 
-	public abstract int order(int inventory);
+	public abstract int[] order(int[] inv);
 	
 }
