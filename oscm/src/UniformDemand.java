@@ -21,4 +21,10 @@ public class UniformDemand extends Demand {
 		double r=random.nextDouble();
 		return(int) Math.floor(1+r*max);
 	}
+
+	@Override
+	public double getMean() {
+		return (1 + max) / 2.0;
+	}
+
 }

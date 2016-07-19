@@ -7,6 +7,7 @@ public class Main {
 		int seed = 0;
 		int i;// test**************************************************
 		int[] initialInventory = {50, 30};
+		int[] boxSize = {30, 20};
 		
 		//Demand demand = new ConstantDemand(10);
 		Demand[] demand = {
@@ -15,9 +16,9 @@ public class Main {
 		};
 		
 		Policy policy = new ConstantPolicy(50);
-//		Policy policy = new ReorderPointPolicy(42, 50);
+		//Policy policy = new DaysOfStockPolicy();
 		
-		Simulator simulator = new Simulator(initialInventory,
+		Simulator simulator = new Simulator(initialInventory, boxSize,
 				demand, policy, 20);  //demand[i]************************
 		
 	}

@@ -9,7 +9,8 @@ public class Simulator {
 	private int totalShipments=0;
 	private int unmetDemands=0;
 
-	public Simulator(int[] initialInventory, Demand[] demand, Policy policy, int periods)
+	public Simulator(int[] initialInventory, int[] boxSize, Demand[] demand, 
+			Policy policy, int periods)
 	{
 		// K : number of products
 		int K = initialInventory.length;
@@ -24,6 +25,11 @@ public class Simulator {
 		int[][] q = new int[periods][K];
 		int[][] x = new int[periods + leadTime][K];
 		int[][] d = new int[periods][K];
+		
+		double[] meanDemand = new double[K];
+		for (int k = 0; k < K; ++k) {
+			meanDemand[k] = demand[k].getMean();
+		}
 		
 		// TODO add box size, max inventory level
 		// TODO lead times for shipments
@@ -41,7 +47,7 @@ public class Simulator {
 			if (t % cycle == 0)
 			{                          
 				// Step 1: order new inventory every cycle period
-				q[t] = policy.order(inv);
+				q[t] = policy.order(inv, boxSize, meanDemand);
 				x[t + leadTime] = q[t];
 				totalShipments+= q[t][1];
 			}
@@ -85,8 +91,9 @@ public class Simulator {
 		// average inventory level
 		// unmet demand
 		// met demand
-		// number of shipments
-		// etc.
+		// TODO number of shipments using MyUtils.sum(x[t])
+		
+		
 		System.out.println();
 		System.out.println("Simulation periods: "+periods);
 //		System.out.println("Total demands: "+ totalDemands);
