@@ -11,15 +11,17 @@ public class Main {
 		int seed0 = 0;
 		int seed1 = 42; 
 		Demand[] demand = {
-				new UniformDemand(25, seed0),
-				new UniformDemand(20, seed1) 			
+				new UniformDemand(20, seed0),
+				new UniformDemand(10, seed1) 			
 		};
 		
-		Policy policy = new ConstantPolicy(50);
-		//Policy policy = new DaysOfStockPolicy();
+		//Policy policy = new ConstantPolicy(50);
+		Policy policy = new DaysOfStockPolicy(7, 10);
 		
 		Simulator simulator = new Simulator(initialInventory, boxSize,
-				demand, policy, 20);
+				demand, policy, 1000);
+		
+		// TODO for Maggie: Percentage of unmet demand??
 		
 	}	
 }

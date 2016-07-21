@@ -1,7 +1,7 @@
 import java.util.Random;
 
 /**
- * Random number in {1, 2, ..., max}.
+ * Random number in {0, 1, 2, ..., max}.
  * 
  *
  */
@@ -19,12 +19,12 @@ public class UniformDemand extends Demand {
 	@Override
 	public int getDemand(){
 		double r=random.nextDouble();
-		return(int) Math.floor(1+r*max);
+		return(int) Math.floor(r* (max + 1));
 	}
 
 	@Override
 	public double getMean() {
-		return (1 + max) / 2.0; //
+		return max / 2.0; //
 	}
 
 }

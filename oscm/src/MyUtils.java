@@ -11,7 +11,12 @@ public final class MyUtils {
 		return Arrays.copyOf(a, a.length);
 	}
 	
-	
+	/**
+	 * Round up x to a multiple of n.
+	 */
+	public static int roundUpToMultiple(int x, int n) {
+		return (int) (Math.ceil(x / 1.0 / n) * n);
+	}
 	
 	/**
 	 * Return the sum of the elements of an array.
@@ -22,6 +27,13 @@ public final class MyUtils {
 			sum += i;
 		}
 		return sum;
+	}
+	
+	public static void main(String[] args) {
+		for (int i = 0; i < 25; ++i) {
+			System.out.printf("roundUpToMultiple(%d,10) = %d\n", i,
+					roundUpToMultiple(i, 10));
+		}
 	}
 	
 }
