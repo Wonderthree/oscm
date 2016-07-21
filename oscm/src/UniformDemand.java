@@ -24,7 +24,7 @@ public class UniformDemand extends Demand {
 
 	@Override
 	public double getMean() {
-		return (1 + max) / 2.0;
+		return (1 + max) / 2.0; //
 	}
 
 }

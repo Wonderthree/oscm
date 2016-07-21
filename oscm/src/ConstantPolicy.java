@@ -13,7 +13,7 @@ public class ConstantPolicy extends Policy {
 		for (int i = 0; i < inv.length; ++i) {
 			q[i] = value;
 		}
-		return q;
+		return q;       //simulator 54
 	}
 	
 }
