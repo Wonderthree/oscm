@@ -70,25 +70,21 @@ public class Simulator {
 
 			// Step 3: demand appears
 			for (int k = 0; k < K; ++k) {
-				d[t][k] = demand[k].getDemand();    //********
+				d[t][k] = demand[k].getDemand();   
 
-				totalDemand[0] += d[t][0];	   
-				totalDemand[1] += d[t][1];
+				//totalDemand[0] += d[t][0];	  
+				//totalDemand[1] += d[t][1];
+				totalDemand[k] += d[t][k]; //***********************************************
 
 				if (i[k] >= d[t][k])
 				{
 					inv[k] = i[k] - d[t][k];
-					//totalDemand[0] +=d[t][0];	   
-					//totalDemand[1] +=d[t][1];
 				}
 				else
 				{
 					unmetDemand[k] += d[t][k] - i[k];
-					//nd=inv[k];
-					//inv[k]-=nd;
+					
 					inv[k] = i[k] - i[k]; 
-					//totalDemand[0] += d[t][0];     
-					//totalDemand[1] += d[t][1];
 				}
 			}
 
@@ -151,14 +147,17 @@ public class Simulator {
 
 		System.out.println("Simulation periods: "+periods);
 		System.out.printf("\n");
-		System.out.println("Product 0 total demand: "+ totalDemand [0]);
-		System.out.println("Product 1 total demand: "+ totalDemand [1]);
+		for (int k = 0; k < K; ++k) {
+			System.out.println("Product 1 total demand: "+ totalDemand [k]);
+		}
 		System.out.printf("\n");
-		System.out.println("Product 0 average demand: "+ meanDemand [0]);
-		System.out.println("Product 1 average demand: "+ meanDemand [1]);
+		for (int k = 0; k < K; ++k) {
+			System.out.println("Product 0 average demand: "+ meanDemand [k]);
+		}
 		System.out.printf("\n");
-		System.out.println("Product 0 total unmet demand: "+unmetDemand[0]);
-		System.out.println("Product 1 total unmet demand: "+unmetDemand[1]);
+		for (int k = 0; k < K; ++k) {
+			System.out.println("Product 0 total unmet demand: "+unmetDemand[k]);
+		}
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
 			System.out.printf("Product %d total shipment: %d\n", k, totalShipment[k]);
