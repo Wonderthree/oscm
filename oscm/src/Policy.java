@@ -1,6 +1,6 @@
 
 public abstract class Policy {
 
-	public abstract int[] order(int[] inv, int[] boxSize, double[] meanDemand);
+	public abstract int[] order(int maxInventory, int[] inv, int[] boxSize, double[] meanDemand);
 	
 }

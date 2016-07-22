@@ -8,15 +8,14 @@ public class Simulator {
 	private int[] totalDemand;
 	private int totalShipment;
 	private int[] unmetDemand;
-	//private int totalShipments0=0;
-	//private int totalShipments1=0;
+	
 
-
-	public Simulator(int[] initialInventory, int[] boxSize, Demand[] demand, 
-			Policy policy, int periods)
+	public Simulator(int[] initialInventory, int maxInventory, int[] boxSize, 
+			Demand[] demand, Policy policy, int periods)
 	{
 		// K : number of products
 		int K = initialInventory.length;
+		
 		// totalDemand[k] : total demand (met and unmet) for product k
 		totalDemand = new int[K];
 		unmetDemand = new int[K]; 
@@ -25,17 +24,16 @@ public class Simulator {
 		// q[t][k] : order quantity in period t for product k
 		// x[t][k] : quantity to arrive in period t for product k
 		// x[t + leadTime][k] = q[t][k]
-		int[][] q = new int[periods][K];       //******************************************2
+		int[][] q = new int[periods][K];       
 		int[][] x = new int[periods + leadTime][K];
 		int[][] d = new int[periods][K];
 
 		double[] meanDemand = new double[K];
-		for (int k = 0; k <K; ++k) {          //********************************************
+		for (int k = 0; k <K; ++k) {          
 			meanDemand[k] = demand[k].getMean();
 		}
 
 		// TODO add box size, max inventory level
-		// TODO lead times for shipments
 		// TODO much much later: demand and policy for multiple drugs
 
 		// inv[k] : inventory level of product k
@@ -49,22 +47,34 @@ public class Simulator {
 
 
 			// Step 1: order new inventory every cycle period
+			
+			//Could a for (int k = 0; k < K; ++k) be applied here to loop the q[t][k] and
+			//x[t][k]?
+			
 			if (t % cycle == 0)  
-			{                          
+			{    
+				//daily replenishment is set, but it is subject to this ordering cycle
 				q[t] = policy.order(inv, boxSize, meanDemand); 
-				//daily replenishment is designed, but it is subject to this ordering cycle
-
+				// .order is an Array which contains 2 elements, therefore when the equation
+				// is looped, q[t] becomes a 2-D Array.*************************************		                                               
+				   
 				x[t + leadTime] = q[t];
-				//totalShipments0 += q[t][0]; 
-				//totalShipments1 += q[t][1]; 
+				// Similarly,X[][] & q[][] is define to be 2-D Array previously which is now 
+				// applied as 1-D Array here  
+				
+				// x[0](namely x[0][0] & x[0][1]) is 0, because no value is assigned and the
+				// default value are 0s.
 			}
 
 
 
 			// Step 2: inventory arrives (after lead time)
 			for (int k = 0; k < K; ++k) {    
-				i[k] += x[t][k];         
-			}
+				i[k] += x[t][k];     
+				// i[0] = i[0](initialInventory0) + x[0][0](0) = 0
+				// i[1] = i[1](initialInventory1) + x[0][1](0) = 0
+				// i[k] is a changing variable in every time period	
+				}
 
 
 
@@ -74,7 +84,7 @@ public class Simulator {
 
 				//totalDemand[0] += d[t][0];	  
 				//totalDemand[1] += d[t][1];
-				totalDemand[k] += d[t][k]; //***********************************************
+				totalDemand[k] += d[t][k]; //************************************
 
 				if (i[k] >= d[t][k])
 				{
@@ -111,28 +121,6 @@ public class Simulator {
 		// TODO number of shipments using MyUtils.sum(x[t])
 		//System.out.println(x.length);
 
-		// convert 2-D Array into 1-D Array ************************************************
-		// divide 2-D Array into 2 1-D Array
-		int index = 0;
-		int[] n = new int[x.length];                            
-		int[] m = new int[x.length];
-
-		// to calculate the length of new 1-D Array
-		//int len = 0;
-		//for(int i = 0;i < x.length; i++){
-		//len += x[i].length;
-		//}                       
-
-		//n = new int[len/2];
-		//m = new int[len/2];
-
-		for(int i = 0; i < x.length;i++){
-			//for(int j = 0; j < x[i].length/2; j++){
-			n[index] = x[i][0];
-			m[index] = x[i][1];
-			index++;
-			//}
-		}
 
 		int[] totalShipment = new int[K];
 		for (int k = 0; k < K; ++k) {
@@ -144,19 +132,18 @@ public class Simulator {
 		}
 
 
-
 		System.out.println("Simulation periods: "+periods);
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
-			System.out.println("Product 1 total demand: "+ totalDemand [k]);
+			System.out.printf("Product %d total demand: %d\n", k, totalDemand [k]);
 		}
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
-			System.out.println("Product 0 average demand: "+ meanDemand [k]);
+			System.out.printf("Product %d average demand: %.1f\n", k, meanDemand[k]);
 		}
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
-			System.out.println("Product 0 total unmet demand: "+unmetDemand[k]);
+			System.out.printf("Product %d total unmet demand: %d\n", k, unmetDemand[k]);
 		}
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
