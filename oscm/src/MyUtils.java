@@ -29,6 +29,23 @@ public final class MyUtils {
 		return sum;
 	}
 	
+	/**
+	 * Find the minimum index, e.g., min index of {2, 1, 3} is 1,  min
+	 * index of {2, 4, 1, 3} is 2.
+	 * @param a
+	 * @return
+	 */
+	// TODO Ann, Maggie try to execute this code by hand {2, 1, 3}
+	public static int findMinIndex(double[] a) {
+		int minIndex = 0;
+		for (int i = 1; i < a.length; ++i) {
+			if (a[i] < a[minIndex]) {
+				minIndex = i;
+			}
+		}
+		return minIndex;
+	}
+	
 	public static void main(String[] args) {
 		for (int i = 0; i < 30; ++i) {
 			System.out.printf("roundUpToMultiple(%d,8) = %d\n", i,

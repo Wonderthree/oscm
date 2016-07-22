@@ -54,7 +54,7 @@ public class Simulator {
 			if (t % cycle == 0)  
 			{    
 				//daily replenishment is set, but it is subject to this ordering cycle
-				q[t] = policy.order(inv, boxSize, meanDemand); 
+				q[t] = policy.order(maxInventory, inv, boxSize, meanDemand); 
 				// .order is an Array which contains 2 elements, therefore when the equation
 				// is looped, q[t] becomes a 2-D Array.*************************************		                                               
 				   
@@ -149,7 +149,16 @@ public class Simulator {
 		for (int k = 0; k < K; ++k) {
 			System.out.printf("Product %d total shipment: %d\n", k, totalShipment[k]);
 		}
+		
+		// TODO
+		System.out.printf("Policy = %s%n", policy.toString());
+		System.out.printf("Number of shipments = %d\n", 0);
 
 	}
 
+	// TODO
+	public double getUnmetDemandProportion() {
+		return 0;
+	}
+	
 }
