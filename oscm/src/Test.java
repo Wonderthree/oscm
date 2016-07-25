@@ -31,7 +31,6 @@ public class Test {
 		Simulator simulator = new Simulator(initialInventory, maxInventory, boxSize,
 				demand, policy, periods);
 		
-		// TODO for Maggie: Percentage of unmet demand??
 		
 	}
 	

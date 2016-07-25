@@ -8,6 +8,7 @@ public class Simulator {
 	private int[] totalDemand;
 	private int totalShipment;
 	private int[] unmetDemand;
+	private double[] unmetDemandPercent;
 	
 
 	public Simulator(int[] initialInventory, int maxInventory, int[] boxSize, 
@@ -47,10 +48,6 @@ public class Simulator {
 
 
 			// Step 1: order new inventory every cycle period
-			
-			//Could a for (int k = 0; k < K; ++k) be applied here to loop the q[t][k] and
-			//x[t][k]?
-			
 			if (t % cycle == 0)  
 			{    
 				//daily replenishment is set, but it is subject to this ordering cycle
@@ -86,14 +83,11 @@ public class Simulator {
 				//totalDemand[1] += d[t][1];
 				totalDemand[k] += d[t][k]; //************************************
 
-				if (i[k] >= d[t][k])
-				{
+				if (i[k] >= d[t][k]){
 					inv[k] = i[k] - d[t][k];
 				}
-				else
-				{
+				else{
 					unmetDemand[k] += d[t][k] - i[k];
-					
 					inv[k] = i[k] - i[k]; 
 				}
 			}
@@ -109,19 +103,14 @@ public class Simulator {
 				System.out.printf("product %d: i = %d, q = %d, d = %d, j = %d\n",
 						k, i[k], q[t][k], d[t][k], inv[k]);
 			}
-			System.out.printf("\n\n"); //System.out.println();
-			//totalShipment[0]=MyUtils.sum(x[t+leadTime]);
+			System.out.printf("\n\n");
 		}                             
 
-		// TODO print metrics such as:
-		// average inventory level
-		// unmet demand
-		// met demand
-
+		
+		
+		
 		// TODO number of shipments using MyUtils.sum(x[t])
 		//System.out.println(x.length);
-
-
 		int[] totalShipment = new int[K];
 		for (int k = 0; k < K; ++k) {
 			int[] temp = new int[q.length];
@@ -131,11 +120,27 @@ public class Simulator {
 			totalShipment[k] = MyUtils.sum(temp);
 		}
 
-
+		
+		
+		double[] unmetDemandPercent = new double[K];
+		for (int k = 0; k < K; ++k) {
+			unmetDemandPercent[k] = unmetDemand[k]/1.0 / totalDemand[k];
+		}
+		
+		
+		
+		// TODO print metrics such as:
+		// average inventory level
+		// unmet demand
+		// met demand
 		System.out.println("Simulation periods: "+periods);
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
 			System.out.printf("Product %d total demand: %d\n", k, totalDemand [k]);
+		}
+		System.out.printf("\n");
+		for (int k = 0; k < K; ++k) {
+			System.out.printf("Product %d total shipment: %d\n", k, totalShipment[k]);
 		}
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
@@ -147,18 +152,10 @@ public class Simulator {
 		}
 		System.out.printf("\n");
 		for (int k = 0; k < K; ++k) {
-			System.out.printf("Product %d total shipment: %d\n", k, totalShipment[k]);
+			System.out.printf("Product %d unmetDemandPercentage: %.6s\n", k, unmetDemandPercent[k]);
 		}
+		System.out.printf("\n");
+		System.out.printf("Policy = %s%n", policy.toString());    //*************************************************************
 		
-		// TODO
-		System.out.printf("Policy = %s%n", policy.toString());
-		System.out.printf("Number of shipments = %d\n", 0);
-
-	}
-
-	// TODO
-	public double getUnmetDemandProportion() {
-		return 0;
-	}
-	
+	}	
 }

@@ -55,4 +55,14 @@ public class DaysOfStockPolicy extends Policy {
 
 		return q;
 	}	
+	
+	
+	//******************************************************************************************
+	@Override                          
+	public String toString() {
+		return String.format("DaysOfStockPolicy(%d,%d)", baseDays, orderUpToDays);
+	}
+	//******************************************************************************************
+	
+	
 }

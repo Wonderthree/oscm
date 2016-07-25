@@ -35,7 +35,6 @@ public final class MyUtils {
 	 * @param a
 	 * @return
 	 */
-	// TODO Ann, Maggie try to execute this code by hand {2, 1, 3}
 	public static int findMinIndex(double[] a) {
 		int minIndex = 0;
 		for (int i = 1; i < a.length; ++i) {

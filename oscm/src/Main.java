@@ -17,6 +17,8 @@ public class Main {
 				new UniformDemand(10, seed1) 			
 		};
 		//Demand demand = new ConstantDemand(10);
+		
+		
 
 		int periods = 20;
 
@@ -24,16 +26,16 @@ public class Main {
 
 		try (PrintStream out = new PrintStream("out.csv")) {
 			for (int b = 1; b <= 10; ++b) {
-				Policy policy = new DaysOfStockPolicy(b, 10);
+				Policy policy = new SmartPolicy(b, 10);
+				//Policy policy = new DaysOfStockPolicy(b,10);
 
 
 				Simulator simulator = new Simulator(initialInventory, maxInventory, boxSize,
 						demand, policy, periods);
 
-				out.printf("%d,%.4f%n", b, 
-						simulator.getUnmetDemandProportion());
+				//out.printf("%d,%.4f%n", b,                                 
+						//simulator.getUnmetDemandProportion());
 			}
 		}
 	}
-
 }
