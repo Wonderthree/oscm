@@ -1,7 +1,7 @@
 import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
-public class Main {
+public class Exp2 {
 
 	public static void main(String[] args) throws Exception {
 		int[] initialInventory = {50, 30};
@@ -20,11 +20,11 @@ public class Main {
 		
 		
 
-		int periods = 20;
+		int periods = 40;
 
 
 
-		try (PrintStream out = new PrintStream("out.csv")) {
+		try (PrintStream out = new PrintStream("exp2.csv")) {
 			for (int b = 1; b <= 10; ++b) {
 				Policy policy = new SmartPolicy(b, 10);
 				//Policy policy = new DaysOfStockPolicy(b,10);
@@ -33,8 +33,11 @@ public class Main {
 				Simulator simulator = new Simulator(initialInventory, maxInventory, boxSize,
 						demand, policy, periods);
 
-				//out.printf("%d,%.4f%n", b,                                 
-						//simulator.getUnmetDemandProportion());
+				out.printf("%d,%.4f,%d%n", b,                                 
+						simulator.getUnmetDemandProportion(),
+						simulator.getNumberOfShipments());
+				
+				// number of shipments
 			}
 		}
 	}

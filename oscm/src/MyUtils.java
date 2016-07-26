@@ -30,6 +30,17 @@ public final class MyUtils {
 	}
 	
 	/**
+	 * Return the minimum value in an array.
+	 */
+	public static double min(double[] a) {
+		double min = Double.MAX_VALUE;
+		for (double d : a) {
+			min = Math.min(min, d);
+		}
+		return min;
+	}
+	
+	/**
 	 * Find the minimum index, e.g., min index of {2, 1, 3} is 1,  min
 	 * index of {2, 4, 1, 3} is 2.
 	 * @param a
@@ -50,6 +61,10 @@ public final class MyUtils {
 			System.out.printf("roundUpToMultiple(%d,8) = %d\n", i,
 					roundUpToMultiple(i, 8));
 		}
+	}
+	
+	public static double doubleDivision(int a, int b) {
+		return a / 1.0 / b;
 	}
 	
 }

@@ -7,11 +7,9 @@
 public class SmartPolicy extends Policy {
 
 	private final int baseDays;
-	private final int orderUpToDays;
 	
-	public SmartPolicy(int baseDays, int orderUpToDays) {
+	public SmartPolicy(int baseDays) {
 		this.baseDays = baseDays;
-		this.orderUpToDays = orderUpToDays;
 	}
 
 	
@@ -19,14 +17,13 @@ public class SmartPolicy extends Policy {
 	
 	@Override
 	public int[] order(int maxInventory, int[] inv, int[] boxSize, double[] meanDemand) {
-		DaysOfStockPolicy dosp = new DaysOfStockPolicy(baseDays, orderUpToDays);
-		int[] shipment = dosp.order(maxInventory, inv, boxSize, meanDemand);
-		
-		if (MyUtils.sum(shipment) == 0) {
+		int[] shipment = new int[inv.length];
+
+		if (getMinDaysOfStock(inv, meanDemand) >= baseDays) {
 			return shipment;                     // the 1st return representing the order
 			                                     // not on the cycle days.
 		}
-		
+
 		// Otherwise, ship as much as possible
 		while(true) {
 			double[] d = daysOfStock(inv, shipment, meanDemand);
@@ -43,7 +40,13 @@ public class SmartPolicy extends Policy {
 	}
 	
 	
-	
+	private double getMinDaysOfStock(int[] inv, double[] meanDemand) {
+		double[] a = new double[inv.length];
+		for (int k = 0; k < inv.length; ++k) {
+			a[k] = inv[k] / meanDemand[k];
+		}
+		return MyUtils.min(a);
+	}
 
 	private double[] daysOfStock(int[] inv, int[] shipment, double[] meanDemand) {
 		int K = inv.length;
@@ -60,9 +63,9 @@ public class SmartPolicy extends Policy {
 	
 	
 	
-	//@Override
+	@Override
 	public String toString() {
-		return String.format("SmartPolicy(%d,%d)", baseDays, orderUpToDays);
+		return String.format("SmartPolicy(%d)", baseDays);
 	}
 	
 }
