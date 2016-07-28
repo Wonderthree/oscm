@@ -32,9 +32,7 @@ public class DaysOfStockPolicy extends Policy {
 			int q = (int) (orderUpToDays * meanDemand - inv);
 			return MyUtils.roundUpToMultiple(q, boxSize);
 		}
-		else { // otherwise return 0
 			return 0;
-		}
 	}
 
 

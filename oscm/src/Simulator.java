@@ -97,9 +97,8 @@ public class Simulator {
 				}
 			}
 
-
+            // if(shouldPrint) is a switch to off and on the everyday details
 			if (shouldPrint) {
-				// debugging code
 				System.out.printf("//--------------------------\n");
 				System.out.printf("// period = %d\n", t);
 				System.out.printf("//--------------------------\n");
@@ -110,6 +109,10 @@ public class Simulator {
 				}
 				System.out.printf("\n\n");
 			}
+			
+			
+			
+			
 
 			// number of shipments
 			int[] numberOfShipment = new int[periods];
@@ -120,11 +123,11 @@ public class Simulator {
 				counterOfShipment++;
 			}
 
-		}                             
+		}    // period loop ends here                         
 
 
 
-
+        // total shipment
 		int[] totalShipment = new int[K];
 		for (int k = 0; k < K; ++k) {
 			int[] temp = new int[q.length];
@@ -135,7 +138,7 @@ public class Simulator {
 		}
 
 
-
+        // unmetDemandproportion
 		double[] unmetDemandPercent = new double[K];
 		for (int k = 0; k < K; ++k) {
 			unmetDemandPercent[k] = MyUtils.doubleDivision(unmetDemand[k], totalDemand[k]);
@@ -173,7 +176,7 @@ public class Simulator {
 	}
 
 
-
+    // for excel output
 	public double getUnmetDemandProportion() {
 		int td = MyUtils.sum(totalDemand);
 		int ud = MyUtils.sum(unmetDemand);
