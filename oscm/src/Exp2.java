@@ -12,7 +12,7 @@ public class Exp2 {
 	public static void main(String[] args) throws Exception {
 		int[] initialInventory = {50, 30};
 		// max inventory = 30 days of mean demand
-		int maxInventory = 450;
+		int maxInventory = 900;
 
 		int[] boxSize = {30, 20};
 
