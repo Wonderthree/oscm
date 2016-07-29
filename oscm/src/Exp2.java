@@ -1,4 +1,3 @@
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 /**
@@ -11,15 +10,11 @@ public class Exp2 {
 
 	public static void main(String[] args) throws Exception {
 		int[] initialInventory = {50, 30};
-		// max inventory = 30 days of mean demand
-		int maxInventory = 900;
 
 		int[] boxSize = {30, 20};
-
-
 		int seed0 = 0;
 		int seed1 = 42; 
-		
+
 		// average of 20 patients per day
 		Demand[] demand = {
 				// MMR
@@ -29,79 +24,53 @@ public class Exp2 {
 		};
 		//Demand demand = new ConstantDemand(10);
 
-		int cycle = 1;
-		int leadTime = 7;
+		int M = 30;
+		double totalMean = 0;
+		for (Demand d : demand) {
+			totalMean += d.getMean();
+		}
+		// max inventory = M days of mean demand
+		int maxInventory = (int) totalMean * M;
+		// order up to days should be less than M 
+		int orderUpToDays = Math.min(M, 30);
+
+		// Note: cycle must be greater than lead time!
+		int cycle = 5;		
+		int leadTime = 3;
 
 		int periods = 5 * 365;
 
-		int baseDays = 10;
-		int orderUpToDays = 60;
-		Policy[] policies = {
-				new SmartPolicy(baseDays),
-				new DaysOfStockPolicy(baseDays, orderUpToDays)
-		};
+		// run the smart policy with different base days values
+		try (PrintStream out = new PrintStream("exp2-smartpolicy.csv")) {
+			for (int baseDays = 1; baseDays <= 10; baseDays++) {
+				Policy policy = new SmartPolicy(baseDays);
 
-		try (PrintStream out = new PrintStream("exp2.csv")) {
-			for (Policy policy : policies) {
 				Simulator simulator = new Simulator(cycle, leadTime, 
 						initialInventory, maxInventory, boxSize,
 						demand, policy, periods);
 
-				out.printf("%d,%.4f,%d\n", baseDays,                                 
-						simulator.getUnmetDemandProportion(),
-						simulator.getNumberOfShipments());
-
-				// number of shipments
-			}
-		}
-		
-		try (PrintStream out = new PrintStream("exp2_smartPolicy1.csv")) {
-			for (baseDays = 10; baseDays <= 30; baseDays++) {
-				System.out.printf("**********************************\n");
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[0], periods);
-
-				out.printf("%d,%d%n", baseDays,                                 
-						simulator.getNumberOfShipments());
-			}
-		}
-		
-		try (PrintStream out = new PrintStream("exp2_daysofstockPolicy1.csv")) {
-			for (baseDays = 10; baseDays <= 30; baseDays++) {
-				System.out.printf("**********************************\n");
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[1], periods);
-
-				out.printf("%d,%d%n", baseDays,                                 
-						simulator.getNumberOfShipments());
-			}
-		}
-		
-		try (PrintStream out = new PrintStream("exp2_smartPolicy2.csv")) {
-			for (baseDays = 10; baseDays <= 30; baseDays++) {
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[0], periods);
-				
-				out.printf("%d,%.4f%n", baseDays,                                 
+				out.printf("%d,%d,%.4f%n", baseDays,                                 
+						simulator.getNumberOfShipments(),
 						simulator.getUnmetDemandProportion());
-			
 			}
 		}
 		
-		try (PrintStream out = new PrintStream("exp2_daysofstockPolicy2.csv")) {
-			for (baseDays = 10; baseDays <= 30; baseDays++) {
+		// run the days of stock policy with different base days values
+		try (PrintStream out = new PrintStream("exp2-daysofstockpolicy.csv")) {
+			for (int baseDays = 1; baseDays <= 10; baseDays++) {
+				Policy policy = new DaysOfStockPolicy(baseDays, orderUpToDays);
+
 				Simulator simulator = new Simulator(cycle, leadTime, 
 						initialInventory, maxInventory, boxSize,
-						demand, policies[1], periods);
-				
-				out.printf("%d,%.4f%n", baseDays,                                 
+						demand, policy, periods);
+
+				out.printf("%d,%d,%.4f%n", baseDays,                                 
+						simulator.getNumberOfShipments(),
 						simulator.getUnmetDemandProportion());
-			
 			}
 		}
+				
 	}
+	
 }
 

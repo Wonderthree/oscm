@@ -2,9 +2,17 @@ import java.util.Arrays;
 
 public class Simulator {
 
+	// input parameters
 	private final int cycle;
 	private final int leadTime;
-
+	private int[] initialInventory;
+	private int[] boxSize;
+	private Demand[] demand;
+	private Policy policy;
+	private final int maxInventory;
+	private final int periods;
+	
+	// output metrics
 	private int[] totalDemand;
 	private int totalShipment;
 	private int[] unmetDemand;
@@ -13,12 +21,33 @@ public class Simulator {
 
 	private boolean shouldPrint = false;
 
-	public Simulator(int cycle, int leadTime, int[] initialInventory, int maxInventory, int[] boxSize, 
+	public Simulator(int cycle, int leadTime, int[] initialInventory,
+			int maxInventory, int[] boxSize, 
 			Demand[] demand, Policy policy, int periods)
 	{
 		this.cycle = cycle;
 		this.leadTime = leadTime;
+		this.initialInventory = MyUtils.copy(initialInventory);
+		this.boxSize = MyUtils.copy(boxSize);
+		this.demand = demand;
+		this.policy = policy;
+		this.periods = periods;
+		this.maxInventory = maxInventory;
 		
+		// check that parameters are valid
+		if (cycle < leadTime) {
+			throw new IllegalArgumentException(
+					"cycle must be greater than lead time");
+		}
+		
+		// reset the random seed for each demand
+		for (int i = 0; i < demand.length; ++i) {
+			demand[i].reset();
+		}
+		simulate();
+	}
+	
+	private void simulate() {
 		// K : number of products
 		int K = initialInventory.length;
 
@@ -43,7 +72,7 @@ public class Simulator {
 		// TODO much much later: demand and policy for multiple drugs
 
 		// inv[k] : inventory level of product k
-		int[] inv = initialInventory;        
+		int[] inv = MyUtils.copy(initialInventory);        
 
 		for (int t = 0; t < periods; ++t)
 		{
@@ -147,8 +176,8 @@ public class Simulator {
 
 
 
-		System.out.println("Simulation periods: "+periods);
-		System.out.printf("\n");
+		System.out.printf("Policy = %s%n", policy.toString());    //*************************************************************
+		System.out.printf("Number of simulation periods: %d%n", periods);
 		for (int k = 0; k < K; ++k) {
 			System.out.printf("Product %d total demand: %d\n", k, totalDemand [k]);
 		}
@@ -168,11 +197,8 @@ public class Simulator {
 		for (int k = 0; k < K; ++k) {
 			System.out.printf("Product %d unmetDemandPercentage: %.6s\n", k, unmetDemandPercent[k]);
 		}
-		System.out.printf("\n");
-		System.out.printf("Policy = %s%n", policy.toString());    //*************************************************************
-		System.out.printf("\n");
 		System.out.printf("Number of Shipment: %d%n%n", counterOfShipment);
-
+		System.out.printf("%n%n%n");
 	}
 
 

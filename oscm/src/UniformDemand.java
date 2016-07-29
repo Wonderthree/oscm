@@ -9,11 +9,13 @@ public class UniformDemand extends Demand {
 
 	private final int max;
 	private Random random;
+	private final int seed;
 	
-	public UniformDemand(int max,int seed){
-		this.max=max;
-		random=new Random();
-		random.setSeed(seed);
+	public UniformDemand(int max, int seed){
+		this.max = max;
+		this.seed = seed;
+		random = new Random();
+		reset();
 	}
 	
 	@Override
@@ -25,6 +27,11 @@ public class UniformDemand extends Demand {
 	@Override
 	public double getMean() {
 		return max / 2.0; 
+	}
+
+	@Override
+	public void reset() {
+		random.setSeed(seed);
 	}
 
 }

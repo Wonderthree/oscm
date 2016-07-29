@@ -6,4 +6,6 @@ public abstract class Demand {
 	
 	public abstract double getMean();
 	
+	public abstract void reset();
+	
 }

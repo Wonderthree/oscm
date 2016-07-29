@@ -1,3 +1,4 @@
+import java.util.Arrays;
 
 /**
  * Let inv denote the current inventory level.  If inv is less than x
@@ -27,12 +28,21 @@ public class DaysOfStockPolicy extends Policy {
 	}
 
 
-	private int order(int inv, int boxSize, double meanDemand) {
+	private int order(int inv, int boxSize, double meanDemand, int remaining) {
+		int q = 0;
 		if (inv <= baseDays * meanDemand) {
-			int q = (int) (orderUpToDays * meanDemand - inv);
-			return MyUtils.roundUpToMultiple(q, boxSize);
+			q = (int) (orderUpToDays * meanDemand - inv);
+			// round q up to a multiple of the box size 
+			q = MyUtils.roundUpToMultiple(q, boxSize);
 		}
-			return 0;
+		
+		// If q exceeds the remaining inventory space, then take away a
+		// box repeatedly until it is less than the remaining inventory
+		// space
+		while (q > remaining) {
+			q -= boxSize;
+		}
+		return q;
 	}
 
 
@@ -45,22 +55,30 @@ public class DaysOfStockPolicy extends Policy {
 
 		int[] q = new int[K];
 
+		// amount of inventory space remaining
+		int remaining = maxInventory;
+		remaining -= MyUtils.sum(inv);
+
 		for (int k = 0; k < K; ++k) {
-			q[k] = order(inv[k], boxSize[k], meanDemand[k]);
+			q[k] = order(inv[k], boxSize[k], meanDemand[k], remaining);
+			remaining -= q[k];
 		}
 		// q[k] must be a multiple of boxSize[k]
 		// Example: if boxSize[1] = 50, q[1] must be 50, 100, 150, ...
 
+		System.out.println("inv = " + Arrays.toString(inv));
+		System.out.println("q   = " + Arrays.toString(q));
+		
 		return q;
 	}	
-	
-	
+
+
 	//******************************************************************************************
 	@Override                          
 	public String toString() {
 		return String.format("DaysOfStockPolicy(%d,%d)", baseDays, orderUpToDays);
 	}
 	//******************************************************************************************
-	
-	
+
+
 }
