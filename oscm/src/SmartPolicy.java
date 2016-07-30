@@ -26,7 +26,7 @@ public class SmartPolicy extends Policy {
 
 		// Otherwise, ship as much as possible
 		while(true) {
-			double[] d = daysOfStock(inv, shipment, meanDemand);
+			double[] d = getDaysOfStock(inv, shipment, meanDemand);
 			int k = MyUtils.findMinIndex(d);
 			if (MyUtils.sum(inv) + MyUtils.sum(shipment) + boxSize[k] > maxInventory) {
 				break;
@@ -48,18 +48,6 @@ public class SmartPolicy extends Policy {
 		return MyUtils.min(a);
 	}
 
-	private double[] daysOfStock(int[] inv, int[] shipment, double[] meanDemand) {
-		int K = inv.length;
-		// d: days of stock vector
-		double[] d = new double[K];
-		for (int k = 0; k < K; ++k) {
-			d[k] = (inv[k] + shipment[k]) / meanDemand[k];  // methods within the same class
-			                                                // could be applied mutually 
-			                                                // without considering the time
-			                                                // sequence?
-		}
-		return d;
-	}
 	
 	
 	
