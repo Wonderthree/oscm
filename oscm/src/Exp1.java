@@ -1,5 +1,4 @@
 
-import java.io.FileNotFoundException;
 import java.io.PrintStream;
 
 /**
@@ -40,7 +39,8 @@ public class Exp1 {
 				new SmartPolicy(baseDays),
 				new DaysOfStockPolicy(baseDays, orderUpToDays)
 		};
-
+		
+		
 		try (PrintStream out = new PrintStream("exp1.csv")) {
 			for (Policy policy : policies) {
 				Simulator simulator = new Simulator(cycle, leadTime, 
@@ -53,56 +53,6 @@ public class Exp1 {
 			
 			}
 		}
-		
-		try (PrintStream out = new PrintStream("exp1_smartPolicy1.csv")) {
-			for (baseDays = 1; baseDays <= 15; baseDays++) {
-				System.out.printf("**********************************\n");
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[0], periods);
-
-				out.printf("%d,%d%n", baseDays,                                 
-						simulator.getNumberOfShipments());
-			}
-		}
-		
-		try (PrintStream out = new PrintStream("exp1_daysofstockPolicy1.csv")) {
-			for (baseDays = 1; baseDays <= 15; baseDays++) {
-				System.out.printf("**********************************\n");
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[1], periods);
-
-				out.printf("%d,%d%n", baseDays,                                 
-						simulator.getNumberOfShipments());
-			}
-		}
-		
-		try (PrintStream out = new PrintStream("exp1_smartPolicy2.csv")) {
-			for (baseDays = 1; baseDays <= 15; baseDays++) {
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[0], periods);
-				
-				out.printf("%d,%.4f%n", baseDays,                                 
-						simulator.getUnmetDemandProportion());
-			
-			}
-		}
-		
-		try (PrintStream out = new PrintStream("exp1_daysofstockPolicy2.csv")) {
-			for (baseDays = 1; baseDays <= 15; baseDays++) {
-				Simulator simulator = new Simulator(cycle, leadTime, 
-						initialInventory, maxInventory, boxSize,
-						demand, policies[1], periods);
-				
-				out.printf("%d,%.4f%n", baseDays,                                 
-						simulator.getUnmetDemandProportion());
-			
-			}
-		}
-		
-		
 	}
 }
 

@@ -11,12 +11,12 @@ public class Simulator {
 	private Policy policy;
 	private final int maxInventory;
 	private final int periods;
+	/** Number of products */
+	private final int K;
 	
 	// output metrics
 	private int[] totalDemand;
-	private int totalShipment;
 	private int[] unmetDemand;
-	private double[] unmetDemandPercent;
 	private int counterOfShipment = 0;
 
 	private boolean shouldPrint = false;
@@ -24,6 +24,7 @@ public class Simulator {
 	public Simulator(int cycle, int leadTime, int[] initialInventory,
 			int maxInventory, int[] boxSize, 
 			Demand[] demand, Policy policy, int periods)
+	throws Exception
 	{
 		this.cycle = cycle;
 		this.leadTime = leadTime;
@@ -33,6 +34,7 @@ public class Simulator {
 		this.policy = policy;
 		this.periods = periods;
 		this.maxInventory = maxInventory;
+		this.K = boxSize.length;
 		
 		// check that parameters are valid
 		if (cycle < leadTime) {
@@ -47,10 +49,11 @@ public class Simulator {
 		simulate();
 	}
 	
-	private void simulate() {
-		// K : number of products
-		int K = initialInventory.length;
 
+	private int[][] q;
+	private int[][] x;
+
+	private void simulate() throws Exception {
 		// totalDemand[k] : total demand (met and unmet) for product k
 		totalDemand = new int[K];
 		unmetDemand = new int[K]; 
@@ -59,8 +62,8 @@ public class Simulator {
 		// q[t][k] : order quantity in period t for product k
 		// x[t][k] : quantity to arrive in period t for product k
 		// x[t + leadTime][k] = q[t][k]
-		int[][] q = new int[periods][K];       
-		int[][] x = new int[periods + leadTime][K];
+		q = new int[periods][K];
+		x = new int[periods + leadTime][K];
 		int[][] d = new int[periods][K];
 
 		double[] meanDemand = new double[K];
@@ -84,8 +87,10 @@ public class Simulator {
 			// Step 1: order new inventory every cycle period
 			if (t % cycle == 0)  
 			{    
+				int[] inventoryPosition = getInventoryPosition(t, inv);
 				//daily replenishment is set, but it is subject to this ordering cycle
-				q[t] = policy.order(maxInventory, inv, boxSize, meanDemand); 
+				q[t] = policy.order(maxInventory, inventoryPosition,
+						boxSize, meanDemand); 
 				// .order is an Array which contains 2 elements, therefore when the equation
 				// is looped, q[t] becomes a 2-D Array.*************************************		                                               
 
@@ -178,6 +183,10 @@ public class Simulator {
 
 		System.out.printf("Policy = %s%n", policy.toString());    //*************************************************************
 		System.out.printf("Number of simulation periods: %d%n", periods);
+		System.out.printf("Number of Shipment: %d%n%n", counterOfShipment);
+		for (int k = 0; k < K; ++k) {
+			System.out.printf("Product %d unmetDemandPercentage: %.6s\n", k, unmetDemandPercent[k]);
+		}
 		for (int k = 0; k < K; ++k) {
 			System.out.printf("Product %d total demand: %d\n", k, totalDemand [k]);
 		}
@@ -194,13 +203,29 @@ public class Simulator {
 			System.out.printf("Product %d total unmet demand: %d\n", k, unmetDemand[k]);
 		}
 		System.out.printf("\n");
-		for (int k = 0; k < K; ++k) {
-			System.out.printf("Product %d unmetDemandPercentage: %.6s\n", k, unmetDemandPercent[k]);
-		}
-		System.out.printf("Number of Shipment: %d%n%n", counterOfShipment);
 		System.out.printf("%n%n%n");
 	}
 
+	public int getNumberOfProducts() {
+		return boxSize.length;
+	}
+	
+	/**
+	 * Note:
+	 * Inventory Position = Current Inventory Level + Pipeline Inventory
+     * Pipeline Inventory = Inventory sent but not yet received
+     * 
+     * Return the amount of inventory position for each product.
+	 */
+	public int[] getInventoryPosition(int t, int[] inv) {
+		int[] p = MyUtils.copy(inv);
+		for (int k = 0; k < K; ++k) {
+			for (int u = t; u < t + leadTime; ++u) {
+				p[k] += x[u][k];
+			}
+		}
+		return p;
+	}
 
     // for excel output
 	public double getUnmetDemandProportion() {

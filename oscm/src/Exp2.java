@@ -9,18 +9,31 @@ import java.io.PrintStream;
 public class Exp2 {
 
 	public static void main(String[] args) throws Exception {
-		int[] initialInventory = {50, 30};
+		// Note: cycle must be greater than lead time!
+		int cycle = 10;		
+		int leadTime = 8;
+		// order up to days should be less than M 
+		//int orderUpToDays = Math.min(M, 30);
+		int orderUpToDays = 30;
+		
+		int baseDaysMax = 30;
+		
+		int[] initialInventory = {40, 80, 70, 90, 80, 60, 45, 65, 100, 140};
 
-		int[] boxSize = {30, 20};
-		int seed0 = 0;
-		int seed1 = 42; 
+		int[] boxSize = {100, 100, 100, 100, 100, 
+				100, 100, 100, 100, 100};
 
-		// average of 20 patients per day
 		Demand[] demand = {
-				// MMR
-				new UniformDemand(20, seed0),
-				// DTaP
-				new UniformDemand(10, seed1) 			
+				new UniformDemand(10, 0),
+				new UniformDemand(10, 1),
+				new UniformDemand(10, 2),
+				new UniformDemand(10, 3),
+				new UniformDemand(10, 4),
+				new UniformDemand(10, 5),
+				new UniformDemand(10, 6),
+				new UniformDemand(10, 7),
+				new UniformDemand(10, 8),
+				new UniformDemand(10, 9) 			
 		};
 		//Demand demand = new ConstantDemand(10);
 
@@ -31,18 +44,12 @@ public class Exp2 {
 		}
 		// max inventory = M days of mean demand
 		int maxInventory = (int) totalMean * M;
-		// order up to days should be less than M 
-		int orderUpToDays = Math.min(M, 30);
-
-		// Note: cycle must be greater than lead time!
-		int cycle = 5;		
-		int leadTime = 3;
 
 		int periods = 5 * 365;
 
 		// run the smart policy with different base days values
 		try (PrintStream out = new PrintStream("exp2-smartpolicy.csv")) {
-			for (int baseDays = 1; baseDays <= 10; baseDays++) {
+			for (int baseDays = 1; baseDays <= baseDaysMax; baseDays++) {
 				Policy policy = new SmartPolicy(baseDays);
 
 				Simulator simulator = new Simulator(cycle, leadTime, 
@@ -57,7 +64,7 @@ public class Exp2 {
 		
 		// run the days of stock policy with different base days values
 		try (PrintStream out = new PrintStream("exp2-daysofstockpolicy.csv")) {
-			for (int baseDays = 1; baseDays <= 10; baseDays++) {
+			for (int baseDays = 1; baseDays <= baseDaysMax; baseDays++) {
 				Policy policy = new DaysOfStockPolicy(baseDays, orderUpToDays);
 
 				Simulator simulator = new Simulator(cycle, leadTime, 

@@ -16,7 +16,7 @@ public class SmartPolicy extends Policy {
 	
 	
 	@Override
-	public int[] order(int maxInventory, int[] inv, int[] boxSize, double[] meanDemand) {
+	public int[] myOrder(int maxInventory, int[] inv, int[] boxSize, double[] meanDemand) {
 		int[] shipment = new int[inv.length];
 
 		if (getMinDaysOfStock(inv, meanDemand) >= baseDays) {

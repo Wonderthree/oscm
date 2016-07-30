@@ -16,6 +16,7 @@ public class DaysOfStockPolicy extends Policy {
 
 	private final int baseDays;
 	private final int orderUpToDays;
+	private int cycleStart = 0;
 
 	public DaysOfStockPolicy(int baseDays, int orderUpToDays) {
 		this.baseDays = baseDays;
@@ -27,6 +28,12 @@ public class DaysOfStockPolicy extends Policy {
 		return baseDays;
 	}
 
+	private void updateCycleStart(int numberOfProducts) {
+		cycleStart++;
+		if (cycleStart == numberOfProducts) {
+			cycleStart = 0;
+		}
+	}
 
 	private int order(int inv, int boxSize, double meanDemand, int remaining) {
 		int q = 0;
@@ -35,7 +42,7 @@ public class DaysOfStockPolicy extends Policy {
 			// round q up to a multiple of the box size 
 			q = MyUtils.roundUpToMultiple(q, boxSize);
 		}
-		
+
 		// If q exceeds the remaining inventory space, then take away a
 		// box repeatedly until it is less than the remaining inventory
 		// space
@@ -49,28 +56,29 @@ public class DaysOfStockPolicy extends Policy {
 
 
 	@Override
-	public int[] order(int maxInventory, int[] inv, int[] boxSize, double[] meanDemand) {
+	public int[] myOrder(int maxInventory, int[] inventoryPosition, 
+			int[] boxSize, double[] meanDemand) {
 		// K : number of products
-		int K = inv.length;
+		int K = inventoryPosition.length;
 
 		int[] q = new int[K];
 
 		// amount of inventory space remaining
 		int remaining = maxInventory;
-		remaining -= MyUtils.sum(inv);
+		remaining -= MyUtils.sum(inventoryPosition);
 
 		for (int k = 0; k < K; ++k) {
-			q[k] = order(inv[k], boxSize[k], meanDemand[k], remaining);
+			q[k] = order(inventoryPosition[k], boxSize[k], 
+					meanDemand[k], remaining);
 			remaining -= q[k];
 		}
 		// q[k] must be a multiple of boxSize[k]
 		// Example: if boxSize[1] = 50, q[1] must be 50, 100, 150, ...
 
-		System.out.println("inv = " + Arrays.toString(inv));
-		System.out.println("q   = " + Arrays.toString(q));
+		updateCycleStart(K);
 		
 		return q;
-	}	
+	}
 
 
 	//******************************************************************************************
